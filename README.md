@@ -71,7 +71,3 @@ Contributions are welcome! Please follow these steps:
 2. Create a feature branch (`git checkout -b feature/awesome-feature`).
 3. Ensure code follows the existing style and passes linting.
 4. Submit a pull request with a clear description of changes.
-
-## 📄 License
-
-This project is licensed under the MIT License – see the `LICENSE` file for details.
