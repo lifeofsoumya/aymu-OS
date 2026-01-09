@@ -129,7 +129,7 @@ export function Dock() {
         animate={{ x: 0, opacity: 1 }}
         transition={{ delay: 0.3, duration: 0.5, type: 'spring' }}
       >
-        <div className="dock flex flex-col gap-1 -translate-y-1/2">
+        <div className="dock flex flex-col -translate-y-1/2">
           {/* App Drawer Button */}
           <div
             className="relative"
@@ -176,7 +176,7 @@ export function Dock() {
             </AnimatePresence>
           </div>
 
-          <div className="w-8 h-px bg-border/50 mx-auto my-1" />
+          <div className="w-8 h-px bg-border/70 mx-auto my-1" />
 
           {/* Pinned Apps */}
           {dockApps.map((app, index) => (
@@ -195,11 +195,11 @@ export function Dock() {
                 transition={{ delay: 0.2 + index * 0.05 }}
                 whileHover={{
                   scale: 1.13,
-                  x: 20,
+                  x: 10,
                   transition: {
                     type: 'spring',
-                    stiffness: 100,
-                    damping: 15,
+                    stiffness: 200,
+                    damping: 5,
                   }
                 }}
                 exit={{
@@ -232,7 +232,7 @@ export function Dock() {
 
           {/* Divider between pinned and running apps */}
           {runningApps.length > 0 && (
-            <div className="w-8 h-px bg-border/50 mx-auto my-1" />
+            <div className="w-8 h-px bg-border/70 mx-auto my-1" />
           )}
 
           {/* Running (unpinned) Apps */}
@@ -286,7 +286,7 @@ export function Dock() {
             );
           })}
 
-          <div className="w-8 h-px bg-border/50 mx-auto my-1" />
+          <div className="w-8 h-px bg-border/70 mx-auto my-1" />
 
           {/* Trash */}
           <div
