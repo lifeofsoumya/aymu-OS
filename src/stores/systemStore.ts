@@ -40,7 +40,7 @@ const defaultUsers: User[] = [
 export const useSystemStore = create<SystemStore>()(
   persist(
     (set) => ({
-      systemState: 'booting',
+      systemState: 'login', // Changed to skip boot screen on public demand
       setSystemState: (state) => set({ systemState: state }),
 
       currentUser: null,

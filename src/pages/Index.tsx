@@ -10,7 +10,7 @@ const Index = () => {
   return (
     <div className="h-screen w-screen overflow-hidden bg-background">
       <AnimatePresence mode="wait">
-        {systemState === 'booting' && <BootScreen key="boot" />}
+        {/* {systemState === 'booting' && <BootScreen key="boot" />} */}
         {systemState === 'login' && <LoginScreen key="login" />}
         {systemState === 'desktop' && <Desktop key="desktop" />}
       </AnimatePresence>
