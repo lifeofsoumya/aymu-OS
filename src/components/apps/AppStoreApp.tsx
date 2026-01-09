@@ -30,17 +30,17 @@ export function AppStoreApp({ windowId }: AppStoreAppProps) {
   const filteredApps = apps.filter((app) => {
     const matchesCategory = activeCategory === 'all' || app.category === activeCategory;
     const matchesSearch = app.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          app.description.toLowerCase().includes(searchQuery.toLowerCase());
+      app.description.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
   });
 
   const handleInstall = async (appId: string) => {
     soundManager.playTick();
     setInstallingApps((prev) => new Set(prev).add(appId));
-    
+
     // Simulate installation delay
     await new Promise((resolve) => setTimeout(resolve, 1500));
-    
+
     installApp(appId);
     setInstallingApps((prev) => {
       const next = new Set(prev);
@@ -76,11 +76,10 @@ export function AppStoreApp({ windowId }: AppStoreAppProps) {
             {categories.map((cat) => (
               <button
                 key={cat.id}
-                className={`px-3 py-1.5 rounded-md text-sm transition-colors ${
-                  activeCategory === cat.id
+                className={`px-3 py-1.5 rounded-md text-sm transition-colors ${activeCategory === cat.id
                     ? 'bg-primary text-white'
                     : 'text-foreground hover:bg-muted/50'
-                }`}
+                  }`}
                 onClick={() => setActiveCategory(cat.id)}
               >
                 {cat.label}

@@ -17,10 +17,12 @@ import {
   MessageSquare,
 } from 'lucide-react';
 import type { AppDefinition, AppCategory } from '@/types/os';
+import { AppIcons } from '@/icons/app-icon';
 
 interface AppStore {
   apps: Omit<AppDefinition, 'component'>[];
   installedAppIds: string[];
+  pinnedAppIds: string[];
 
   // App Management
   installApp: (appId: string) => void;
@@ -29,14 +31,20 @@ interface AppStore {
   getApp: (appId: string) => Omit<AppDefinition, 'component'> | undefined;
   getAppsByCategory: (category: AppCategory) => Omit<AppDefinition, 'component'>[];
   getDockApps: () => Omit<AppDefinition, 'component'>[];
+
+  // Dock Management
+  pinApp: (appId: string) => void;
+  unpinApp: (appId: string) => void;
+  isPinned: (appId: string) => boolean;
+  getInstalledApps: () => Omit<AppDefinition, 'component'>[];
 }
 
 const defaultApps: Omit<AppDefinition, 'component'>[] = [
   {
     id: 'finder',
     name: 'Finder',
-    icon: Folder,
-    iconBg: 'bg-gradient-to-br from-blue-500 to-blue-600',
+    icon: AppIcons.Finder,
+    iconBg: 'bg-gradient-to-br from-blue-300 via-blue-600 to-blue-600',
     category: 'system',
     description: 'Browse and manage files',
     isSystemApp: true,
@@ -45,8 +53,8 @@ const defaultApps: Omit<AppDefinition, 'component'>[] = [
   {
     id: 'terminal',
     name: 'Terminal',
-    icon: Terminal,
-    iconBg: 'bg-gradient-to-br from-gray-700 to-gray-900',
+    icon: AppIcons.Terminal,
+    iconBg: 'bg-gradient-to-br from-gray-600 via-gray-800 to-gray-900',
     category: 'development',
     description: 'Command line interface',
     isSystemApp: true,
@@ -55,8 +63,8 @@ const defaultApps: Omit<AppDefinition, 'component'>[] = [
   {
     id: 'settings',
     name: 'Settings',
-    icon: Settings,
-    iconBg: 'bg-gradient-to-br from-gray-500 to-gray-700',
+    icon: AppIcons.Settings,
+    iconBg: 'bg-gradient-to-br from-gray-300 via-gray-600 to-gray-700',
     category: 'system',
     description: 'Configure your system',
     isSystemApp: true,
@@ -65,8 +73,8 @@ const defaultApps: Omit<AppDefinition, 'component'>[] = [
   {
     id: 'appstore',
     name: 'App Store',
-    icon: Store,
-    iconBg: 'bg-gradient-to-br from-indigo-800 to-blue-500',
+    icon: AppIcons.AppStore,
+    iconBg: 'bg-gradient-to-br from-indigo-300 via-indigo-600 to-indigo-600',
     category: 'system',
     description: 'Download and manage apps',
     isSystemApp: true,
@@ -75,8 +83,8 @@ const defaultApps: Omit<AppDefinition, 'component'>[] = [
   {
     id: 'notepad',
     name: 'Notepad',
-    icon: FileText,
-    iconBg: 'bg-gradient-to-br from-amber-400 to-orange-500',
+    icon: AppIcons.Notepad,
+    iconBg: 'bg-gradient-to-br from-yellow-300 via-amber-600 to-amber-600',
     category: 'productivity',
     description: 'Edit text files',
     isSystemApp: true,
@@ -125,8 +133,8 @@ const defaultApps: Omit<AppDefinition, 'component'>[] = [
   {
     id: 'music',
     name: 'Music',
-    icon: Music,
-    iconBg: 'bg-gradient-to-br from-pink-500 to-purple-600',
+    icon: AppIcons.Music,
+    iconBg: 'bg-gradient-to-br from-pink-300 via-pink-700 to-red-600',
     category: 'media',
     description: 'Play your favorite music',
     isSystemApp: true,
@@ -135,8 +143,8 @@ const defaultApps: Omit<AppDefinition, 'component'>[] = [
   {
     id: 'browser',
     name: 'Browser',
-    icon: Globe,
-    iconBg: 'bg-gradient-to-br from-green-400 via-green-800 to-teal-800',
+    icon: AppIcons.Browser,
+    iconBg: 'bg-gradient-to-br from-green-300 via-green-800 to-teal-800',
     category: 'productivity',
     description: 'Browse the web',
     isSystemApp: true,
@@ -161,6 +169,7 @@ export const useAppStore = create<AppStore>()(
     (set, get) => ({
       apps: defaultApps,
       installedAppIds: systemAppIds,
+      pinnedAppIds: systemAppIds, // Initially pin all system apps
 
       installApp: (appId) => {
         set((state) => ({
@@ -174,6 +183,7 @@ export const useAppStore = create<AppStore>()(
 
         set((state) => ({
           installedAppIds: state.installedAppIds.filter(id => id !== appId),
+          pinnedAppIds: state.pinnedAppIds.filter(id => id !== appId),
         }));
       },
 
@@ -185,13 +195,35 @@ export const useAppStore = create<AppStore>()(
         get().apps.filter(app => app.category === category),
 
       getDockApps: () => {
+        const { apps, pinnedAppIds } = get();
+        return apps.filter(app => pinnedAppIds.includes(app.id));
+      },
+
+      pinApp: (appId) => {
+        set((state) => ({
+          pinnedAppIds: [...new Set([...state.pinnedAppIds, appId])],
+        }));
+      },
+
+      unpinApp: (appId) => {
+        set((state) => ({
+          pinnedAppIds: state.pinnedAppIds.filter(id => id !== appId),
+        }));
+      },
+
+      isPinned: (appId) => get().pinnedAppIds.includes(appId),
+
+      getInstalledApps: () => {
         const { apps, installedAppIds } = get();
         return apps.filter(app => installedAppIds.includes(app.id));
       },
     }),
     {
       name: 'aymu-os-apps',
-      partialize: (state) => ({ installedAppIds: state.installedAppIds }),
+      partialize: (state) => ({
+        installedAppIds: state.installedAppIds,
+        pinnedAppIds: state.pinnedAppIds,
+      }),
     }
   )
 );

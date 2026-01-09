@@ -34,7 +34,7 @@ export interface WindowState {
 export interface AppDefinition {
   id: string;
   name: string;
-  icon: LucideIcon;
+  icon: LucideIcon | React.FC<React.SVGProps<SVGSVGElement>>;
   iconBg: string;
   category: AppCategory;
   description: string;
